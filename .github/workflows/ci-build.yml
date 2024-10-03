@@ -1,0 +1,31 @@
+name: CI-Build
+
+# триггер
+on:
+  push:
+    branches:
+      - master
+  # ручной запуск
+  workflow_dispatch:
+
+jobs:
+  build:
+    # среда
+    runs-on: ubuntu-latest
+
+    # переменные окружения
+    env:
+      PROJECT_NAME: src
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Build project
+        run: dotnet build ${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.csproj -c Release -o content
+
+      - name: Archive build output
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-output
+          path: content
